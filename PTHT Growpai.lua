@@ -38,33 +38,7 @@ function notif(text)
 		var[1] = text
 		var.netid = -1
 		SendVarlist(var)
-end
-
-function cek(plant)
-	for y = startY, 0 do
-		for x = 0, endX do
-			if plant then
-				if GetTile(x,y).fg == 0 then
-					FindPath(x,y,100)
-					Sleep(delayPlant)
-					place(plantId)
-					Sleep(delayPlant)
-					FindPath(x + farPlant,y)
-					Sleep(delayPlant)
-				end
-			else
-				if GetTile(x,y).fg == harvestId then
-					FindPath(x,y,100)
-					Hold()
-					Sleep(delayHarvest)
-					place(18)
-				end
-			end
-
-		end
-	end
-
-end
+end 
 
 content = [[
 set_default_color|`o
@@ -157,9 +131,6 @@ end_dialog|ptht|Cancel|Ok
 								FindPath(x + farPlant,y)
 								Sleep(delayPlant)
 							end
-							if math.floor(GetLocal().pos_x // 32) == 0 and math.floor(GetLocal().pos_y // 32) == endX then
-								cek(true)
-							end
 						end
                     end
                 end
@@ -188,9 +159,6 @@ end_dialog|ptht|Cancel|Ok
 								Sleep(200)
 								place(18)
 								Sleep(delayHarvest)
-							end
-							if math.floor(GetLocal().pos_x // 32) == 0 and math.floor(GetLocal().pos_y // 32) == endX then
-								cek(false)
 							end
 						end
                     end
