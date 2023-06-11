@@ -25,13 +25,6 @@ function place(id)
 	SendPacketRaw(false,pkt)
 end
 
-function Hold()
-    local pkt = {}
-    pkt.type = 0
-    pkt.flags = 16779298
-    SendPacketRaw(pkt)
-end
-
 function notif(text)
 		var = {}
 		var[0] = "OnTextOverlay"
@@ -154,9 +147,7 @@ end_dialog|ptht|Cancel|Ok
                 for y = startY, 0, -1 do
                     for x = 0, 199,1 do
                         if GetTile(x,y).fg == harvestId and IsReady(GetTile(x,y)) == true then
-							FindPath(x,y,100)
-							Hold()
-							Sleep(200)
+							FindPath(x,y,delayHarvest)
 							place(18)
 							Sleep(delayHarvest)
                         end
