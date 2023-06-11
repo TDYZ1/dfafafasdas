@@ -29,7 +29,7 @@ function Hold()
     local pkt = {}
     pkt.type = 0
     pkt.flags = 16779298
-    SendPacketRaw(false,pkt)
+    SendPacketRaw(pkt)
 end
 
 function notif(text)
