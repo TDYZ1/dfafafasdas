@@ -156,7 +156,7 @@ end_dialog|ptht|Cancel|Ok
                         if GetTile(x,y).fg == harvestId and IsReady(GetTile(x,y)) == true then
 							FindPath(x,y,delayHarvest)
 							Hold()
-							sleep(delayHarvest)
+							Sleep(delayHarvest)
 							place(18)
 							Sleep(delayHarvest)
                         end
