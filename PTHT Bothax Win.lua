@@ -54,19 +54,20 @@ add_text_input|farPlant|Far Plant|]]..farPlant..[[|5|
 add_label|small| |left
 add_checkbox|planting|Plants|0
 add_checkbox|harvesting|Harvests|0
+add_checkbox|looping|Loop|0
 add_small_font_button|modfly|Turn Off ModFly|noflags|0|0|
 end_dialog|ptht|Cancel|Ok
 		]]
 
 Sleep(500)
-notif("Script Terminated [PTHT]\n    `2Credit : `1Rtnt-#7940")
+notif("Script Executed [PTHT]\n    `2Credit : `1Rtnt-#7940")
 function dialog(types, packet)
 function IsReady(tile)
 	if tile and tile.extra and tile.extra.progress and tile.extra.progress == 1.0 then
 		return true
 	end 
-		return false
-	end
+	return false
+end
 function insert()
 	plantId = tonumber(packet:match("plantId|(.*)harvestId"))
 	harvestId = tonumber( packet:match("harvestId|(.*)startY"))
@@ -101,29 +102,31 @@ add_text_input|farPlant|Far Plant|]]..farPlant..[[|5|
 add_label|small| |left
 add_checkbox|planting|Plants|0
 add_checkbox|harvesting|Harvests|0
+add_checkbox|looping|Loop|0
 add_small_font_button|modfly|Turn Off ModFly|noflags|0|0|
 end_dialog|ptht|Cancel|Ok
 		]]
 	end
-	if packet:find("planting|1\nharvesting|1") then
+	if packet:find("planting|1\nharvesting|1\nlooping|1") or packet:find("planting|1\nharvesting|1") then
 		content = content:gsub("Plants|1","Plants|0")
 		content = content:gsub("Harvests|1","Harvests|0")
+		content = content:gsub("Loop|1","Loop|0")
 		stopHarvest = true
 		stopPlant = true
-	elseif packet:find("planting|1") then
-		content = content:gsub("Plants|0","Plants|1")
-		stopHarvest = true
+	elseif packet:find("looping|1") then
+		content = content:gsub("Loop|0","Loop|1")
+		stopHarvest = false
         stopPlant = false
-		if isPlantRunning then
-			insert()
-		else
 		RunThread(function ()
-			notif("Starting Plant...")
+			while true do
+				place(plantId)
+				Sleep(500)
+				SendPacket(2,"action|dialog_return\ndialog_name|cheats\ncheck_gems|1\ncheck_autoplace|1")
+				Sleep(500)
 				ChangeValue("[C] Modfly", true)
-				isPlantRunning = true
-                for y = startY, 0, -1 do
-                    for x = 0, endX,1 do
-                        if GetTile(x,y).fg == 0 and GetTile(x,y+1).fg ~= 0 and GetTile(x,y+1).fg ~= harvestId then
+				for y = startY, 0, -1 do
+					for x = 0, endX,1 do
+						if GetTile(x,y).fg == 0 and GetTile(x,y+1).fg ~= 0 and GetTile(x,y+1).fg ~= harvestId then
 							FindPath(x,y,delayPlant)
 							Sleep(delayPlant)
 							place(plantId)
@@ -135,9 +138,76 @@ end_dialog|ptht|Cancel|Ok
 							isPlantRunning = false
 							break
 						end
-                    end
-                end
+					end
+					if stopPlant == true then
+						isPlantRunning = false
+						break
+					end
+				end
 				isPlantRunning = false
+				Sleep(1000)
+				SendPacket(2,"action|dialog_return\ndialog_name|ultraworldspray")
+				Sleep(2000)
+				SendPacket(2,"action|dialog_return\ndialog_name|cheats\ncheck_gems|1\ncheck_autoplace|0")
+				ChangeValue("[C] Modfly", true)
+				Sleep(1000)
+				for y = startY, 0, -1 do
+					for x = 0, endX,1 do
+						if GetTile(x,y).fg == harvestId and IsReady(GetTile(x,y)) == true then
+							FindPath(x,y,delayHarvest)
+							Hold()
+							Sleep(delayHarvest)
+							place(18)
+							Sleep(delayHarvest)
+						end
+						if stopHarvest == true then
+							isHarvestRunning = false
+							break
+						end
+					end
+					if stopHarvest == true then
+						isHarvestRunning = false
+						break
+					end
+				end
+				isHarvestRunning = false
+			end
+		end)
+	elseif packet:find("planting|1") then
+		content = content:gsub("Plants|0","Plants|1")
+		stopHarvest = true
+        stopPlant = false
+		if isPlantRunning then
+			insert()
+		else
+		RunThread(function ()
+			place(plantId)
+			Sleep(500)
+			SendPacket(2,"action|dialog_return\ndialog_name|cheats\ncheck_gems|1\ncheck_autoplace|1")
+			Sleep(500)
+			notif("Starting Plant...")
+			ChangeValue("[C] Modfly", true)
+			for y = startY, 0, -1 do
+				for x = 0, endX,1 do
+					if GetTile(x,y).fg == 0 and GetTile(x,y+1).fg ~= 0 and GetTile(x,y+1).fg ~= harvestId then
+						FindPath(x,y,delayPlant)
+						Sleep(delayPlant)
+						place(plantId)
+						Sleep(delayPlant)
+						FindPath(x+farPlant,y,delayPlant)
+						Sleep(delayPlant)
+					end
+					if stopPlant == true then
+						isPlantRunning = false
+						break
+					end
+				end
+				if stopPlant == true then
+					isPlantRunning = false
+					break
+				end
+			end
+			isPlantRunning = false
         end)
 		end
 	elseif packet:find("harvesting|1") then
@@ -149,28 +219,29 @@ end_dialog|ptht|Cancel|Ok
 		else
 		RunThread(function ()
 			notif("Starting Harvest...")
+			SendPacket(2,"action|dialog_return\ndialog_name|cheats\ncheck_gems|1\ncheck_autoplace|0")
 			ChangeValue("[C] Modfly", true)
-			isHarvestRunning = true
-                for y = startY, 0, -1 do
-                    for x = 0, 199,1 do
-                        if GetTile(x,y).fg == harvestId and IsReady(GetTile(x,y)) == true then
-							FindPath(x,y,delayHarvest)
-							Hold()
-							Sleep(delayHarvest)
-							place(18)
-							Sleep(delayHarvest)
-                        end
-							if stopHarvest == true then
-                                isHarvestRunning = false
-								break
-							end
-                    end
-						if stopHarvest == true then
-                            isHarvestRunning = false
-							break
-						end
-                end	
-				isHarvestRunning = false	
+			Sleep(1000)
+			for y = startY, 0, -1 do
+				for x = 0, endX,1 do
+					if GetTile(x,y).fg == harvestId and IsReady(GetTile(x,y)) == true then
+						FindPath(x,y,delayHarvest)
+						Hold()
+						Sleep(delayHarvest)
+						place(18)
+						Sleep(delayHarvest)
+					end
+					if stopHarvest == true then
+						isHarvestRunning = false
+						break
+					end
+				end
+				if stopHarvest == true then
+					isHarvestRunning = false
+					break
+				end
+			end
+			isHarvestRunning = false
         end)
 		end
 	elseif packet:find("planting|0\nharvesting|0") then
