@@ -1,14 +1,3 @@
---↶default settings↷
---can be change in game
-plantId = 5640
-harvestId = 13593
-startY = 193
-endX = 199
-delayPlant = 150
-delayHarvest = 150
-farPlant = 8
-command = "/config"
-
 local stopPlant = false
 local stopHarvest = false
 local isPlantRunning = false
