@@ -132,7 +132,7 @@ elseif packet:find("looping|1") then
 			Sleep(1000)
 			for y = startY, 0, -1 do
 				for x = 0, endX,1 do
-					if GetTile(x,y).fg == harvestId and IsReady(GetTile(x,y)) == true then
+					if GetTile(x,y).fg == harvestId then
 						FindPath(x,y,delayHarvest)
 						Hold()
 						Sleep(delayHarvest)
