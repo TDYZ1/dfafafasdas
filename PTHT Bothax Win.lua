@@ -116,11 +116,11 @@ end_dialog|ptht|Cancel|Ok
 				for y = startY, 0, -1 do
 					for x = 0, endX,1 do
 						if GetTile(x,y).fg == 0 and GetTile(x,y+1).fg ~= 0 and GetTile(x,y+1).fg ~= harvestId then
-							FindPath(x,y,delayPlant)
+							FindPath(x,y,100)
 							Sleep(delayPlant)
 							place(plantId)
 							Sleep(delayPlant)
-							FindPath(x+farPlant,y,delayPlant)
+							FindPath(x+farPlant,y,100)
 							Sleep(delayPlant)
 						end
 						if stopPlant == true then
@@ -143,7 +143,7 @@ end_dialog|ptht|Cancel|Ok
 				for y = startY, 0, -1 do
 					for x = 0, endX,1 do
 						if GetTile(x,y).fg == harvestId and IsReady(GetTile(x,y)) == true then
-							FindPath(x,y,delayHarvest)
+							FindPath(x,y,100)
 							Hold()
 							Sleep(delayHarvest)
 							place(18)
@@ -179,11 +179,11 @@ end_dialog|ptht|Cancel|Ok
 			for y = startY, 0, -1 do
 				for x = 0, endX,1 do
 					if GetTile(x,y).fg == 0 and GetTile(x,y+1).fg ~= 0 and GetTile(x,y+1).fg ~= harvestId then
-						FindPath(x,y,delayPlant)
+						FindPath(x,y,100)
 						Sleep(delayPlant)
 						place(plantId)
 						Sleep(delayPlant)
-						FindPath(x+farPlant,y,delayPlant)
+						FindPath(x+farPlant,y,100)
 						Sleep(delayPlant)
 					end
 					if stopPlant == true then
@@ -214,7 +214,7 @@ end_dialog|ptht|Cancel|Ok
 			for y = startY, 0, -1 do
 				for x = 0, endX,1 do
 					if GetTile(x,y).fg == harvestId and IsReady(GetTile(x,y)) == true then
-						FindPath(x,y,delayHarvest)
+						FindPath(x,y,100)
 						Hold()
 						Sleep(delayHarvest)
 						place(18)
