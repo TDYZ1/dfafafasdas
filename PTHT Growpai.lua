@@ -14,6 +14,13 @@ function place(id)
 	SendPacketRaw(pkt)
 end
 
+function Hold()
+    local pkt = {}
+    pkt.type = 0
+    pkt.flags = 16779298
+    SendPacketRaw(pkt)
+end
+
 function notif(text)
 		var = {}
 		var[0] = "OnTextOverlay"
