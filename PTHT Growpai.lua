@@ -175,7 +175,7 @@ elseif packet:find("looping|1") then
 						if stopPlant then
 							break
 						else
-							if GetTile(x,y).fg == 0 and GetTile(x,y + 1).fg ~= 0 then
+							if GetTile(x,y).fg == 0 and GetTile(x,y + 1).fg ~= 0 GetTile(x,y+1).fg ~= harvestId then
 								FindPath(x,y,delayPlant)
 								Sleep(delayPlant)
 								place(plantId)
